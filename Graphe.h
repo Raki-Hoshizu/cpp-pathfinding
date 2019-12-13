@@ -9,6 +9,7 @@
 #include <limits>
 #include <cmath>
 #include <stack>
+#include <algorithm>
 
 const int max = 200;
 
@@ -29,6 +30,10 @@ private:
     coord _x;
     coord _y;
 
+    double _fCost;
+    double _gCost;
+    double _hCost;
+
     friend bool operator==(Maison const& m1, Maison const& m2);
 };
 
@@ -46,9 +51,8 @@ public:
     void afficheQuartier();
 
     // Algorithme A*
-    double estimerDistance(int, int) const;
-    int choisirRoute(int, int) const;
-    void trouverChemin(int, int) const;
+    double calcHCost(int, int);
+    void findWay(int, int);
 
     //Dijkstra functions
     int findMinVertex(double*, bool*) const;

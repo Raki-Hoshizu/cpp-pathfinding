@@ -13,8 +13,8 @@ int main()
         g.affichageMatrice();
         //g.afficheQuartier();
     // Pour graphe non orienté
-        //g.trouverChemin(1,5);
-        g.dijkstra(1);
+        g.findWay(1,7);
+        //g.dijkstra(1);
     // Pour graphe orienté
         //g.tarjan();
     }

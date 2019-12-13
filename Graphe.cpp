@@ -252,72 +252,89 @@ void Graphe::afficheQuartier()
 
 
 // Algorithme A*
-double Graphe::estimerDistance(int id1, int id2) const
+enum class status { reachable, unreachable, visited };
+
+double Graphe::calcHCost(int src, int dst)
 {
-    //Estimation en vol d'oiseau
     int x1(0), x2(0), y1(0), y2(0);
     for (Maison i : _maisons)
     {
-        if (i.getId() == id1) { x1 = i.getX(); y1 = i.getY(); }
-        if (i.getId() == id2) { x2 = i.getX(); y2 = i.getY(); }
+        if (i.getId() == src) { x1 = i.getX(); y1 = i.getY(); }
+        if (i.getId() == dst) { x2 = i.getX(); y2 = i.getY(); }
     }
-    return (sqrt(pow(x2-x1,2)+pow(y2-y1, 2)));
+    return (sqrt(pow(x2-x1, 2)+pow(y2-y1, 2)));
 }
 
-int Graphe::choisirRoute(int origine, int destination) const
+void Graphe::findWay(int src, int dst)
 {
-    int resId(origine);
-    double move(1000), valeurTrans(0), distRoute(0);
-    for (unsigned int i(1); i<=_nbSommets; ++i)
+    double* gCost = new double[_nbSommets];
+    double* hCost = new double[_nbSommets];
+    std::vector<int> opened;
+    std::vector<int> closed;
+    double fCost;
+    int current(-1), move(0);
+    for (int i(0); i<_nbSommets; ++i)
     {
-        std::cout << "Transition entre " << origine << " et " << i << "...\n";
-        distRoute = _matrice[i-1][origine-1];
-        if (distRoute > 0)
+        gCost[i] = std::numeric_limits<int>::infinity();
+    }
+    opened.push_back(src);
+    gCost[src-1] = 0;
+    hCost[src-1] = 0;
+    while(move < 10)
+    {
+        fCost = std::numeric_limits<double>::infinity();
+        for (int i : opened)
         {
-            valeurTrans = distRoute + estimerDistance(i, destination);
-            std::cout << "\tDistance: " << distRoute << std::endl;
-            std::cout << "\tValeur de la transition: " << valeurTrans << std::endl;
-            if (move > valeurTrans)
+            if (fCost > hCost[i-1] + gCost[i-1])
             {
-                move = valeurTrans;
-                resId = i;
+                fCost = hCost[i-1] + gCost[i-1];
+                current = i;
             }
         }
-        else
+        std::cout << "Noeud en action : " << current << std::endl;
+        std::cout << "\t[hCost: " << hCost[current-1] << ", gCost: " << gCost[current-1] << "]\n";
+        std::cout << "\t[fCost: " << hCost[current-1] + gCost[current-1] << "]\n";
+        int it(0);
+        while(it != opened.size())
         {
-            std::cout << "\tPas de transition." << std::endl;
+            if (opened[it] == current) { opened.erase(opened.begin() + it); }
+            else { ++it; }
         }
+        closed.push_back(current);
+
+        if(current == dst)
+        {
+            return;
+        }
+
+        for (int i(0); i<_nbSommets; ++i)
+        {
+            if (i != current-1)
+            {
+                if (_matrice[i][current-1] > 0)
+                {
+                    if(std::find(closed.begin(), closed.end(), i+1) == closed.end())
+                    {
+                        if(std::find(opened.begin(), opened.end(), i+1) == opened.end())
+                        {
+                            hCost[i] = calcHCost(i+1, dst);
+                            if (gCost[i] > gCost[current-1] + _matrice[i][current-1])
+                                gCost[i] = gCost[current-1] + _matrice[i][current-1];
+                            opened.push_back(i+1);
+                        }
+                    }
+                }
+            }
+        }
+        std::cout << "\tOpened : ";
+        for (int i : opened)
+            std::cout << i << " ";
         std::cout << std::endl;
+        ++move;
     }
-    std::cout << "Transition de " << origine << " vers " << resId << " choisie.\n\n";
-    return resId;
+    delete [] hCost;
+    delete [] gCost;
 }
-
-void Graphe::trouverChemin(int origine, int destination) const
-{
-    std::cout << "Recherche du chemin de la maison " << origine << " a la maison " << destination << "...\n\n";
-    int curseur(origine), tmpCurseur(0);
-    double move(0);
-    std::vector<int> parcourus;
-    parcourus.push_back(origine);
-    while (curseur != destination)
-    {
-        tmpCurseur = choisirRoute(curseur, destination);
-        move += _matrice[curseur-1][tmpCurseur-1];
-        curseur = tmpCurseur;
-        parcourus.push_back(curseur);
-    }
-    std::cout << "Recapitulatif du parcours :" << std::endl;
-    std::cout << "\t";
-    for (unsigned int i(0); i<parcourus.size(); ++i)
-    {
-        std::cout << parcourus[i];
-        if(i != parcourus.size()-1) { std::cout << " -> "; }
-    }
-    std::cout << std::endl;
-    std::cout << "\tDistance parcourue : " << move << std::endl;
-}
-
 
 // Dijkstra functions
 int Graphe::findMinVertex(double* distance, bool* visited) const
