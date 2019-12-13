@@ -177,6 +177,7 @@ int Graphe::lecture(std::string input)
     else
     {
         std::cout << "Impossible d'ouvrir le fichier " << input << std::endl;
+        return -1;
     }
     return 0;
 }
