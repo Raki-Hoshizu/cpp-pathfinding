@@ -6,10 +6,14 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <limits>
+#include <cmath>
+#include <stack>
 
-const int max = 100;
+const int max = 200;
 
 using coord = unsigned int;
+using adjMatrice = std::array<std::array<double, max>, max>;
 
 class Maison
 {
@@ -32,7 +36,6 @@ class Graphe
 {
 public:
     Graphe();
-    std::vector<Maison> getMaisons() { return _maisons; }
     void setOriente(bool o) { _oriente = o; }
     void initMatrice(int);
     void ajoutRoute(int, int, double);
@@ -41,12 +44,22 @@ public:
     void affichageMatrice();
 
     void afficheQuartier();
-    int estimerDistance(int, int) const;
+
+    // Algorithme A*
+    double estimerDistance(int, int) const;
     int choisirRoute(int, int) const;
     void trouverChemin(int, int) const;
 
+    //Dijkstra functions
+    int findMinVertex(double*, bool*) const;
+    void dijkstra(int) const;
+
+    // Algorithme tarjan
+    void findComponent(int, int*, int*, std::stack<int>&, bool*) const;
+    void tarjan() const;
+
 private:
-    std::array<std::array<double, max>, max> _matrice;
+    adjMatrice _matrice;
     std::vector<Maison> _maisons;
     bool _oriente;
     int _nbSommets;
