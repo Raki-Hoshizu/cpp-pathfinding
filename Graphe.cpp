@@ -274,7 +274,7 @@ int Graphe::choisirRoute(int origine, int destination) const
         distRoute = _matrice[i-1][origine-1];
         if (distRoute > 0)
         {
-            valeurTrans = distRoute + this->estimerDistance(i, destination);
+            valeurTrans = distRoute + estimerDistance(i, destination);
             std::cout << "\tDistance: " << distRoute << std::endl;
             std::cout << "\tValeur de la transition: " << valeurTrans << std::endl;
             if (move > valeurTrans)

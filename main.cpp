@@ -8,12 +8,12 @@ int main()
     auto begin = std::chrono::high_resolution_clock::now();
 
     Graphe g;
-    if (g.lecture("F:/Coding/C++/ProjetGraphe/graphS100OD10.gr") == 0)
+    if (g.lecture("F:/Coding/C++/ProjetGraphe/grapheGenere2.gr") == 0)
     {
-        //g.affichageMatrice();
+        g.affichageMatrice();
         //g.afficheQuartier();
     // Pour graphe non orienté
-        g.trouverChemin(1,5);
+        //g.trouverChemin(1,5);
         g.dijkstra(1);
     // Pour graphe orienté
         //g.tarjan();
