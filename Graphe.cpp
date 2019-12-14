@@ -35,7 +35,6 @@ void Graphe::ajoutMaison(Maison m)
             return;
     }
     _maisons.push_back(m);
-    std::cout << "\tMaison ajoutee\n";
 }
 
 int Graphe::lecture(std::string input)
@@ -213,48 +212,9 @@ void Graphe::affichageMatrice()
     std::cout << std::endl;
 }
 
-void Graphe::afficheQuartier()
-{
-    std::cout << "Affichage du quartier :" << std::endl;
-    int minX(std::numeric_limits<int>::infinity()), minY(std::numeric_limits<int>::infinity());
-    int maxX(0), maxY(0);
-    const int maxMatrice(200);
-    for (Maison i : _maisons)
-    {
-        if (i.getX() < minX) { minX = i.getX(); }
-        if (i.getX() > maxX) { maxX = i.getX(); }
-        if (i.getY() < minY) { minY = i.getY(); }
-        if (i.getY() > maxY) { maxY = i.getY(); }
-    }
-    //std::cout << minX << " " << minY << " " << maxX << " " << maxY << std::endl;
-    std::array<std::array<std::string, maxMatrice>, maxMatrice> matrice;
-    for (int y(minY); y<=maxY-minY+1; ++y)
-    {
-        for (int x(minX); x<=maxX-minX+2; ++x)
-        {
-            matrice[x][y] = ".";
-        }
-    }
-    for (Maison i : _maisons)
-    {
-        matrice[i.getX()][i.getY()] = std::to_string(i.getId());
-    }
-    for (int y(maxY-minY+1); y>=minY; --y)
-    {
-        for (int x(minX); x<=maxX-minX+2; ++x)
-        {
-            std::cout << matrice[x][y] << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
-}
-
 
 // Algorithme A*
-enum class status { reachable, unreachable, visited };
-
-double Graphe::calcHCost(int src, int dst)
+double Graphe::calcHCost(int src, int dst) const
 {
     int x1(0), x2(0), y1(0), y2(0);
     for (Maison i : _maisons)
@@ -265,22 +225,23 @@ double Graphe::calcHCost(int src, int dst)
     return (sqrt(pow(x2-x1, 2)+pow(y2-y1, 2)));
 }
 
-void Graphe::findWay(int src, int dst)
+double Graphe::findWay(int src, int dst)
 {
     double* gCost = new double[_nbSommets];
     double* hCost = new double[_nbSommets];
-    std::vector<int> opened;
-    std::vector<int> closed;
     double fCost;
-    int current(-1), move(0);
+    int current(-1);
+    std::vector<int> opened;
+    std::vector<int> visited;
+
     for (int i(0); i<_nbSommets; ++i)
     {
-        gCost[i] = std::numeric_limits<int>::infinity();
+        gCost[i] = std::numeric_limits<double>::infinity();
     }
     opened.push_back(src);
     gCost[src-1] = 0;
     hCost[src-1] = 0;
-    while(move < 10)
+    while(opened.size() > 0)
     {
         fCost = std::numeric_limits<double>::infinity();
         for (int i : opened)
@@ -290,8 +251,13 @@ void Graphe::findWay(int src, int dst)
                 fCost = hCost[i-1] + gCost[i-1];
                 current = i;
             }
+            else if (fCost == hCost[i-1] + gCost[i-1] and hCost[current-1] > hCost[i-1])
+            {
+                fCost = hCost[i-1] + gCost[i-1];
+                current = i;
+            }
         }
-        std::cout << "Noeud en action : " << current << std::endl;
+        std::cout << "Noeud en action : " << current << " " << std::endl;
         std::cout << "\t[hCost: " << hCost[current-1] << ", gCost: " << gCost[current-1] << "]\n";
         std::cout << "\t[fCost: " << hCost[current-1] + gCost[current-1] << "]\n";
         int it(0);
@@ -300,11 +266,19 @@ void Graphe::findWay(int src, int dst)
             if (opened[it] == current) { opened.erase(opened.begin() + it); }
             else { ++it; }
         }
-        closed.push_back(current);
+        visited.push_back(current);
 
         if(current == dst)
         {
-            return;
+            do
+            {
+                std::cout << current << " <- ";
+                current = _maisons[current-1].getIdPred();
+            } while (current != src);
+            std::cout << src << std::endl;
+            delete [] hCost;
+            delete [] gCost;
+            return gCost[dst-1];
         }
 
         for (int i(0); i<_nbSommets; ++i)
@@ -313,27 +287,27 @@ void Graphe::findWay(int src, int dst)
             {
                 if (_matrice[i][current-1] > 0)
                 {
-                    if(std::find(closed.begin(), closed.end(), i+1) == closed.end())
+                    if(std::find(visited.begin(), visited.end(), i+1) == visited.end())
                     {
-                        if(std::find(opened.begin(), opened.end(), i+1) == opened.end())
+                        if((std::find(opened.begin(), opened.end(), i+1) == opened.end()) or gCost[i] > gCost[current-1] + _matrice[i][current-1])
                         {
                             hCost[i] = calcHCost(i+1, dst);
-                            if (gCost[i] > gCost[current-1] + _matrice[i][current-1])
-                                gCost[i] = gCost[current-1] + _matrice[i][current-1];
+                            gCost[i] = gCost[current-1] + _matrice[i][current-1];
+                            _maisons[i].setIdPred(current);
                             opened.push_back(i+1);
                         }
                     }
                 }
             }
         }
-        std::cout << "\tOpened : ";
+        std::cout << "\tVoisins ouverts : ";
         for (int i : opened)
             std::cout << i << " ";
-        std::cout << std::endl;
-        ++move;
+        std::cout << "\n\n";
     }
     delete [] hCost;
     delete [] gCost;
+    return 0;
 }
 
 // Dijkstra functions
@@ -389,6 +363,26 @@ void Graphe::dijkstra(int idMaison) const
     }
     delete [] visited;
     delete [] distance;
+}
+
+void Graphe::comparer(int src, int dst)
+{
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    findWay(src, dst);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto elapsedAStar = end-begin;
+
+    begin = std::chrono::high_resolution_clock::now();
+
+    dijkstra(src);
+
+    end = std::chrono::high_resolution_clock::now();
+    auto elapsedDijkstra = end-begin;
+    std::cout << "\nA* : " << elapsedAStar/std::chrono::microseconds(1) << " microsecondes" << std::endl;
+    std::cout << "Dijkstra : " << elapsedDijkstra/std::chrono::microseconds(1) << " microsecondes" << std::endl;
+
 }
 
 

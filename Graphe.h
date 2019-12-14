@@ -10,8 +10,9 @@
 #include <cmath>
 #include <stack>
 #include <algorithm>
+#include <chrono>
 
-const int max = 200;
+const int max = 500;
 
 using coord = unsigned int;
 using adjMatrice = std::array<std::array<double, max>, max>;
@@ -19,20 +20,20 @@ using adjMatrice = std::array<std::array<double, max>, max>;
 class Maison
 {
 public:
-    Maison(int id, coord x, coord y) : _id(id), _x(x), _y(y)
+    Maison(int id, coord x, coord y) : _id(id), _idPred(id), _x(x), _y(y)
     {}
     coord getX() { return _x; }
     coord getY() { return _y; }
     int getId() { return _id; }
 
+    int getIdPred() const { return _idPred; }
+    void setIdPred(int id) { _idPred = id; }
+
 private:
     int _id;
+    int _idPred;
     coord _x;
     coord _y;
-
-    double _fCost;
-    double _gCost;
-    double _hCost;
 
     friend bool operator==(Maison const& m1, Maison const& m2);
 };
@@ -48,15 +49,15 @@ public:
     int lecture(std::string);
     void affichageMatrice();
 
-    void afficheQuartier();
-
     // Algorithme A*
-    double calcHCost(int, int);
-    void findWay(int, int);
+    double calcHCost(int, int) const;
+    double findWay(int, int);
 
     //Dijkstra functions
     int findMinVertex(double*, bool*) const;
     void dijkstra(int) const;
+
+    void comparer(int,int);
 
     // Algorithme tarjan
     void findComponent(int, int*, int*, std::stack<int>&, bool*) const;
