@@ -427,6 +427,7 @@ void Graphe::findComponent(int u, int* disc, int* low, std::stack<int> &pile, bo
         stacked[popped] = false;
         pile.pop();
     }
+
 }
 
 void Graphe::tarjan() const
@@ -455,4 +456,64 @@ void Graphe::tarjan() const
     delete [] disc;
     delete [] low;
     delete [] stacked;
+}
+
+
+// Algorithme Kruskal
+int find(int x, int* pred)
+{
+    if (pred[x] == x)
+        return x;
+    return find(pred[x], pred);
+}
+
+void unite(int x, int y, int* &pred)
+{
+    int fx = find(x, pred);
+    int fy = find(y, pred);
+    pred[fx] = fy;
+}
+
+void Graphe::kruskal() const
+{
+    int* pred = new int[_nbSommets];
+    std::vector<std::pair<double, std::pair<int, int>>> arcs;
+    for (int i(0); i<_nbSommets; ++i)
+    {
+        pred[i] = i;
+    }
+    std::cout << "Recuperation de la liste des arcs..." << std::endl;
+    for (int i(0); i<_nbSommets; ++i)
+    {
+        for (int j(i); j<_nbSommets; ++j)
+        {
+            if (_matrice[j][i] > 0)
+            {
+                arcs.push_back(std::make_pair(_matrice[i][j], std::make_pair(i, j)));
+            }
+        }
+    }
+
+    int nbArcs(0), it(0);
+    int x(0), y(0);
+    double w(0), wTotal(0);
+    std::cout << "Tri des arcs par poids croissant..." << std::endl;
+    sort(arcs.begin(), arcs.end());
+
+    while (nbArcs < _nbSommets-1 or it < arcs.size())
+    {
+        x = arcs[it].second.first;
+        y = arcs[it].second.second;
+        w = arcs[it].first;
+        if (find(x, pred) != find(y, pred))
+        {
+            unite(x, y, pred);
+            std::cout << "Ajout au Minimum Spanning Tree de :\n";
+            std::cout << "\t" << x << " -> " << y << " : " << w << std::endl;
+            wTotal += w;
+            ++nbArcs;
+        }
+        ++it;
+    }
+    std::cout << "Poids total du MST : " << wTotal << std::endl;
 }

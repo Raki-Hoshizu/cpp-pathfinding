@@ -5,13 +5,15 @@
 int main()
 {
     Graphe g;
-    if (g.lecture("F:/Coding/C++/ProjetGraphe/grapheGenere.gr") == 0)
+    std::string path("F:/Coding/C++/ProjetGraphe/grapheGenere2.gr");
+    if (g.lecture(path) == 0)
     {
         g.affichageMatrice();
     // Pour graphe non orienté
         //g.findWay(150,350);
         //g.dijkstra(1);
-        g.comparer(150, 350);
+        //g.comparer(400, 2);
+        g.kruskal();
     // Pour graphe orienté
         //g.tarjan();
     }

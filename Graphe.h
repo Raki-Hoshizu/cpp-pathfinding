@@ -57,11 +57,14 @@ public:
     int findMinVertex(double*, bool*) const;
     void dijkstra(int) const;
 
-    void comparer(int,int);
+    void comparer(int,int); // Executer A* et Dijsktra et compare leur temps d'exécution
 
-    // Algorithme tarjan
+    // Algorithme Tarjan
     void findComponent(int, int*, int*, std::stack<int>&, bool*) const;
     void tarjan() const;
+
+    // Algorithme Kruskal
+    void kruskal() const;
 
 private:
     adjMatrice _matrice;
