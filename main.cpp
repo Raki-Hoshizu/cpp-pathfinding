@@ -10,7 +10,7 @@ int main()
     {
         g.affichageMatrice();
     // Pour graphe non orienté
-        //g.findWay(150,350);
+        //g.findWay(1, 13);
         //g.dijkstra(1);
         //g.comparer(400, 2);
         //g.kruskal();

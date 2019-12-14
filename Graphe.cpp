@@ -29,6 +29,8 @@ void Graphe::ajoutRoute(int origine, int destination, double poids)
 
 void Graphe::ajoutMaison(Maison m)
 {
+    // On vérifie qu'une maison n'est pas déjà à cet emplacement
+    // ou que l'identifiant n'est pas déjà utilisé
     for (Maison i : _maisons)
     {
         if(i == m or i.getId() == m.getId())
@@ -216,6 +218,7 @@ void Graphe::affichageMatrice()
 // Algorithme A*
 double Graphe::calcHCost(int src, int dst) const
 {
+    // Calcul de la distance de la maison actuelle à la maison destination
     int x1(0), x2(0), y1(0), y2(0);
     for (Maison i : _maisons)
     {
@@ -225,7 +228,7 @@ double Graphe::calcHCost(int src, int dst) const
     return (sqrt(pow(x2-x1, 2)+pow(y2-y1, 2)));
 }
 
-double Graphe::findWay(int src, int dst)
+void Graphe::findWay(int src, int dst)
 {
     double* gCost = new double[_nbSommets];
     double* hCost = new double[_nbSommets];
@@ -234,15 +237,19 @@ double Graphe::findWay(int src, int dst)
     std::vector<int> opened;
     std::vector<int> visited;
 
+    // On initialise les gCost à l'infini
     for (int i(0); i<_nbSommets; ++i)
     {
         gCost[i] = std::numeric_limits<double>::infinity();
     }
+    // On ajoute la maison source aux "ouvertes"
     opened.push_back(src);
     gCost[src-1] = 0;
-    hCost[src-1] = 0;
+    hCost[src-1] = calcHCost(src, dst);
+    // Tant qu'il y a des maisons dans "ouvertes"
     while(opened.size() > 0)
     {
+        // on fait current = maison dans "ouvertes" avec le plus bas fCost
         fCost = std::numeric_limits<double>::infinity();
         for (int i : opened)
         {
@@ -260,6 +267,7 @@ double Graphe::findWay(int src, int dst)
         std::cout << "Noeud en action : " << current << " " << std::endl;
         std::cout << "\t[hCost: " << hCost[current-1] << ", gCost: " << gCost[current-1] << "]\n";
         std::cout << "\t[fCost: " << hCost[current-1] + gCost[current-1] << "]\n";
+        // On enlève current de "ouvertes" et on l'ajoute à "visitées"
         int it(0);
         while(it != opened.size())
         {
@@ -268,6 +276,7 @@ double Graphe::findWay(int src, int dst)
         }
         visited.push_back(current);
 
+        // Si current = destination alors on a trouvé le chemin
         if(current == dst)
         {
             do
@@ -278,36 +287,42 @@ double Graphe::findWay(int src, int dst)
             std::cout << src << std::endl;
             delete [] hCost;
             delete [] gCost;
-            return gCost[dst-1];
+            return;
         }
 
+        // On parcourt tous les voisins de current
         for (int i(0); i<_nbSommets; ++i)
         {
             if (i != current-1)
             {
+                // Si il y a une liaison
                 if (_matrice[i][current-1] > 0)
                 {
+                    // Si voisin n'est pas dans "visitées"
                     if(std::find(visited.begin(), visited.end(), i+1) == visited.end())
                     {
+                        // Si voisin n'est pas dans ouvertes ou que son nouveau gCost < ancien gCost
                         if((std::find(opened.begin(), opened.end(), i+1) == opened.end()) or gCost[i] > gCost[current-1] + _matrice[i][current-1])
                         {
                             hCost[i] = calcHCost(i+1, dst);
                             gCost[i] = gCost[current-1] + _matrice[i][current-1];
                             _maisons[i].setIdPred(current);
-                            opened.push_back(i+1);
+                            // Si il n'est pas dans ouvertes, on l'y ajoute
+                            if (std::find(opened.begin(), opened.end(), i+1) == opened.end())
+                                opened.push_back(i+1);
                         }
                     }
                 }
             }
         }
-        std::cout << "\tVoisins ouverts : ";
-        for (int i : opened)
-            std::cout << i << " ";
-        std::cout << "\n\n";
+        // Pour afficher la liste des voisins ouverts
+//        std::cout << "\tVoisins ouverts : ";
+//        for (int i : opened)
+//            std::cout << i << " ";
+//        std::cout << "\n\n";
     }
     delete [] hCost;
     delete [] gCost;
-    return 0;
 }
 
 // Dijkstra functions
@@ -399,6 +414,7 @@ void Graphe::findComponent(int u, int* disc, int* low, std::stack<int> &pile, bo
     {
         if (static_cast<int>(_matrice[u][v]))
         {
+            // Si le sommet n'a pas été visité
             if (disc[v] == -1)
             {
                 findComponent(v, disc, low, pile, stacked);
@@ -433,9 +449,9 @@ void Graphe::findComponent(int u, int* disc, int* low, std::stack<int> &pile, bo
 void Graphe::tarjan() const
 {
     std::cout << "Tarjan :" << std::endl;
-    int* disc = new int[_nbSommets];
-    int* low = new int[_nbSommets];
-    bool* stacked = new bool[_nbSommets];
+    int* disc = new int[_nbSommets];        // Moments de la découverte pour la première fois
+    int* low = new int[_nbSommets];         // Sommet le plus bas qu'on peut atteindre
+    bool* stacked = new bool[_nbSommets];   // Tableau de bool pour savoir si un sommet a été empilé
     std::stack<int> pile;
     std::cout << "Initialisation..." << std::endl;
     for (int i(0); i<_nbSommets; ++i)
@@ -448,6 +464,7 @@ void Graphe::tarjan() const
     std::cout << "Calcul des SCC (Strongly Connected Component)..." << std::endl;
     for (int i(0); i<_nbSommets; ++i)
     {
+        // Pour chaque sommet non découvert
         if(disc[i] == -1)
         {
             findComponent(i, disc, low, pile, stacked);

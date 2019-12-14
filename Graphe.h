@@ -51,7 +51,7 @@ public:
 
     // Algorithme A*
     double calcHCost(int, int) const;
-    double findWay(int, int);
+    void findWay(int, int);
 
     //Dijkstra functions
     int findMinVertex(double*, bool*) const;

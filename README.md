@@ -1,7 +1,14 @@
 # ProjetGraphe
 Coustance Nathan
 Coyle Matthew
- 
+
+Pour compiler le projet :
+	Importer Graphe.h, Graphe.cpp et main.cpp dans Qt
+	Ne pas oublier de prendre les fichiers .gr fournis
+	Remplacer la variable path par le chemin absolu du graphe qu'on veut importer
+	Décommenter ce que vous voulez utiliser dans le main.cpp
+	Compiler et exécuter.
+
 Graphe.h
 	-> Déclaration de la classe Maison
 	-> Déclaration de la classe Graphe
@@ -59,6 +66,8 @@ A*
 				On défini son parent = la maison actuelle
 				Si le voisin n'est pas dans "ouvertes", on l'y ajoute
 		On continue tout ça tant que la liste "ouvertes" n'est pas vide ou qu'on a pas trouvé la destination
+	-> Graphe::comparer()
+		Exécuter à la fois A* puis Dijkstra et affiche leur temps d'exécution respectif
 
 Tarjan
 	-> Graphe::findComponent()
