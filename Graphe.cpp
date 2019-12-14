@@ -516,4 +516,5 @@ void Graphe::kruskal() const
         ++it;
     }
     std::cout << "Poids total du MST : " << wTotal << std::endl;
+    delete [] pred;
 }
