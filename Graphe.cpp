@@ -395,8 +395,8 @@ void Graphe::comparer(int src, int dst)
 
     end = std::chrono::high_resolution_clock::now();
     auto elapsedDijkstra = end-begin;
-    std::cout << "\nA* : " << elapsedAStar/std::chrono::microseconds(1) << " microsecondes" << std::endl;
-    std::cout << "Dijkstra : " << elapsedDijkstra/std::chrono::microseconds(1) << " microsecondes" << std::endl;
+    std::cout << "\nA* : " << elapsedAStar/std::chrono::microseconds(1)/1000 << "." << elapsedDijkstra/std::chrono::microseconds(1)%1000 << " ms" << std::endl;
+    std::cout << "Dijkstra : " << elapsedDijkstra/std::chrono::microseconds(1)/1000 << "." << elapsedDijkstra/std::chrono::microseconds(1)%1000 << " ms" << std::endl;
 
 }
 

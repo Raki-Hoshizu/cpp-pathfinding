@@ -8,6 +8,7 @@
 #include <unistd.h>
 #define GetCurrentDir getcwd
 
+// Retourne le chemin absolu de ce fichier
 std::string GetCurrentWorkingDir() {
   char buff[FILENAME_MAX];
   GetCurrentDir( buff, FILENAME_MAX );
