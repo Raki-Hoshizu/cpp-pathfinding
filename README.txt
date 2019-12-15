@@ -3,11 +3,11 @@ Coustance Nathan
 Coyle Matthew
 
 Pour compiler le projet :
-	Importer Graphe.h, Graphe.cpp et main.cpp dans Qt
-	Ne pas oublier de prendre les fichiers .gr fournis
-	Remplacer la variable path par le chemin absolu du graphe qu'on veut importer
-	Décommenter ce que vous voulez utiliser dans le main.cpp
-	Compiler et exécuter.
+	g++ -std=c++14 -Wall main.cpp Graphe.cpp -o projetGraphe.exe
+	./projetGraphe.exe -h pour accéder au manuel
+
+main.cpp
+	-> Gestion des arguments passés en paramètres
 
 Graphe.h
 	-> Déclaration de la classe Maison
