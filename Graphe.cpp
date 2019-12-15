@@ -268,7 +268,7 @@ void Graphe::findWay(int src, int dst)
         std::cout << "\t[hCost: " << hCost[current-1] << ", gCost: " << gCost[current-1] << "]\n";
         std::cout << "\t[fCost: " << hCost[current-1] + gCost[current-1] << "]\n";
         // On enlève current de "ouvertes" et on l'ajoute à "visitées"
-        int it(0);
+        unsigned int it(0);
         while(it != opened.size())
         {
             if (opened[it] == current) { opened.erase(opened.begin() + it); }
@@ -347,7 +347,7 @@ void Graphe::dijkstra(int idMaison) const
 
     for (int i(0); i<_nbSommets; ++i)
     {
-        distance[i] = INT_MAX;
+        distance[i] = std::numeric_limits<double>::infinity();
         visited[i] = false;
     }
 
@@ -510,8 +510,8 @@ void Graphe::kruskal() const
             }
         }
     }
-
-    int nbArcs(0), it(0);
+    unsigned int it(0);
+    int nbArcs(0);
     int x(0), y(0);
     double w(0), wTotal(0);
     std::cout << "Tri des arcs par poids croissant..." << std::endl;
