@@ -19,6 +19,11 @@ Graphe.cpp
 		Si 0 : Affiche l'essentiel
 	-> Code des fonctions de Graphe
 
+genGraphe.py
+	-> Script python pour générer un graphe.gr
+	Commande :
+		python genGraphe.py nbSommets nbArcsSortantParSommets >> fichier.gr
+
 Fichiers .gr
 	-> Fichiers de graphe sous la forme :
 		o no  		// go pour orienté, autre pour non orienté
@@ -32,22 +37,17 @@ Fichiers .gr
 						n: identifiant de la maison destination
 						w: poids de l'arc
 	-> grapheNO1.gr
-		Graphe non orienté avec 500 maisons qui ont chacunes +- 10 liaisons
+		Graphe non orienté avec 500 maisons qui ont chacunes +- 10 liaisons (9 min)
 	-> grapheNO2.gr
-		Graphe non orienté avec 15 maisons qui ont chacune +- 3 liaisons
+		Graphe non orienté avec 15 maisons qui ont chacune +- 3 liaisons (2 min)
 	-> grapheTarjan.gr
 		Graphe orienté pour expérimenter l'algorithme Tarjan
 
 comparaison.png
 	-> Tableau de comparaison de l'exécution de A* et de Dijkstra pour grapheNO1.gr
-		10 tests ont été effectués et les moyennes des résultats sont dans ce tableau
-			/!\ Les tests ont été effectués sans l'affichage des maisons "ouvertes",
-				puisque ce dernier faisait perdre beaucoup de temps à A*
-
-genGraphe.py
-	-> Script python pour générer un graphe.gr
-	Commande :
-		python genGraphe.py nbSommets nbArcsParSommets >> fichier.gr
+		10 tests ont été effectués et les moyennes des résultats sont dans ce tableau		
+		/!\ Les tests ont été effectués en DEBUGMODE 0
+		(sans l'affichage des maisons "ouvertes",puisque ce dernier faisait perdre beaucoup de temps à A*)
 
 A*
 	-> Graphe::calcHCost()
