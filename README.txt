@@ -14,6 +14,9 @@ Graphe.h
 	-> Déclaration de la classe Graphe
 
 Graphe.cpp
+	-> Définition de DEBUGMODE (0 ou 1)
+		Si 1 : Affiche tous les détails
+		Si 0 : Affiche l'essentiel
 	-> Code des fonctions de Graphe
 
 Fichiers .gr

@@ -1,5 +1,12 @@
 #include "Graphe.h"
 
+#define DEBUGMODE 0
+#if DEBUGMODE
+#define LOG(opened) std::cout << "\tVoisins ouverts : "; for (int i : opened) std::cout << i << " "; std::cout << "\n\n";
+#else
+#define LOG(opened)
+#endif
+
 Graphe::Graphe():  _oriente(false), _nbSommets(0)
 {}
 
@@ -315,10 +322,11 @@ void Graphe::findWay(int src, int dst)
                 }
             }
         }
-        std::cout << "\tVoisins ouverts : ";
-        for (int i : opened)
-            std::cout << i << " ";
-        std::cout << "\n\n";
+//        std::cout << "\tVoisins ouverts : ";
+//        for (int i : opened)
+//            std::cout << i << " ";
+//        std::cout << "\n\n";
+        LOG(opened);
     }
     delete [] hCost;
     delete [] gCost;
