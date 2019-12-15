@@ -315,11 +315,10 @@ void Graphe::findWay(int src, int dst)
                 }
             }
         }
-        // Pour afficher la liste des voisins ouverts
-//        std::cout << "\tVoisins ouverts : ";
-//        for (int i : opened)
-//            std::cout << i << " ";
-//        std::cout << "\n\n";
+        std::cout << "\tVoisins ouverts : ";
+        for (int i : opened)
+            std::cout << i << " ";
+        std::cout << "\n\n";
     }
     delete [] hCost;
     delete [] gCost;

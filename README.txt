@@ -37,9 +37,9 @@ Fichiers .gr
 
 comparaison.png
 	-> Tableau de comparaison de l'exécution de A* et de Dijkstra pour grapheNO1.gr
-		/!\ Si le temps d'exécution est anormalement long pour A* sur 400 -> 2
-			c'est à cause des cout inclus dans la fonctions, en les enlevant
-			on gagne +- 3ms
+		10 tests ont été effectués et les moyennes des résultats sont dans ce tableau
+			/!\ Les tests ont été effectués sans l'affichage des maisons "ouvertes",
+				puisque ce dernier faisait perdre beaucoup de temps à A*
 
 genGraphe.py
 	-> Script python pour générer un graphe.gr
