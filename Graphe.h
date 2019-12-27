@@ -12,6 +12,11 @@
 #include <algorithm>
 #include <chrono>
 
+// For GetCurrentWorkingDir
+#include <stdio.h>
+#include <unistd.h>
+#define GetCurrentDir getcwd
+
 const int max = 500;
 
 using coord = unsigned int;
@@ -49,6 +54,8 @@ public:
     int lecture(std::string);
     void affichageMatrice();
 
+    int getHouseNumber() const { return _maisons.size(); }
+
     // Algorithme A*
     double calcHCost(int, int) const;
     void findWay(int, int);
@@ -72,3 +79,9 @@ private:
     bool _oriente;
     int _nbSommets;
 };
+
+
+std::string GetCurrentWorkingDir();
+void printHelp();
+bool checkIfOk(Graphe const&, int const&, int const&);
+void start(std::string, std::string, std::string, std::string);

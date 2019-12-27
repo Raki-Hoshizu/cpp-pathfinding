@@ -1,11 +1,103 @@
 #include "Graphe.h"
 
-#define DEBUGMODE 0
+#define DEBUGMODE 1
 #if DEBUGMODE
 #define LOG_OPEN_NEIGHBOUR(opened) std::cout << "\tVoisins ouverts : "; for (int i : opened) std::cout << i << " "; std::cout << "\n\n";
 #else
 #define LOG_OPEN_NEIGHBOUR(opened)
 #endif
+
+std::string GetCurrentWorkingDir() {
+  char buff[FILENAME_MAX];
+  GetCurrentDir( buff, FILENAME_MAX );
+  std::string current_working_dir(buff);
+  return current_working_dir;
+}
+
+void printHelp()
+{
+    std::cout << "How to execute :\n";
+    std::cout << "\t./projetGraphe.exe -g fichierGraphe.gr -f functionNumber -s sourceNode -d destinationNode\n";
+    std::cout << "Function numbers :\n";
+    std::cout << "\t0: affichageMatrice()\n";
+    std::cout << "\t1: findWay(sourceNode, destinationNode)\n";
+    std::cout << "\t2: dijkstra(sourceNode)\n";
+    std::cout << "\t3: comparer(sourceNode, destinationNode)\n";
+    std::cout << "\t4: tarjan()\n";
+    std::cout << "\t5: kruskal()\n";
+}
+
+bool checkIfOk(Graphe const& g, int const& src, int const& dst=0)
+{
+    if (src > g.getHouseNumber() or dst > g.getHouseNumber()) {
+        std::cout << "Error. Source or Destination can't be more than the house number." << std::endl;
+        if (src > g.getHouseNumber()) std::cout << "The source node is set to " << src << std::endl;
+        if (dst > g.getHouseNumber()) std::cout << "The destination node is set to " << dst << std::endl;
+        std::cout << "Number of house(s) : " << g.getHouseNumber() << std::endl;
+        return false;
+    }
+    return true;
+}
+
+
+void start(std::string fichier, std::string fonction, std::string source, std::string destination)
+{
+    if (stoi(source) < 1 or stoi(destination) < 1) { std::cout << "Error. Source or Destination node can't be less than 1." << std::endl; return; }
+
+    std::string path(GetCurrentWorkingDir()+"/"+fichier);
+    int numFonction = std::stoi(fonction);
+    int src = std::stoi(source);
+    int dst = std::stoi(destination);
+    Graphe g;
+    if (g.lecture(path) == 0)
+    {
+        switch(numFonction)
+        {
+        case -1:
+            std::cout << "No function number. Exiting.\n";
+            return;
+
+        case 0:
+            if (g.getHouseNumber() > 0) { g.affichageMatrice(); return; }
+            else { std::cout << "No graph detected.\n"; printHelp(); return; }
+
+        case 1:
+            if (g.getHouseNumber() == 0) { std::cout << "No graph detected.\n"; printHelp(); return; }
+            if (src==1 and dst==1) { std::cout << "Reminder: don't forget you can change src and dst nodes with -s and -d arguments.\n";}
+            if(!checkIfOk(g, src, dst)) return;
+            g.findWay(src, dst);
+            break;
+
+        case 2:
+            if (g.getHouseNumber() == 0) { std::cout << "No graph detected.\n"; printHelp(); return; }
+            if (src==1) { std::cout << "Reminder: don't forget you can change src and dst nodes with -s and -d arguments.\n";}
+            if(!checkIfOk(g, src)) return;
+            g.dijkstra(src);
+            break;
+
+        case 3:
+            if (g.getHouseNumber() == 0) { std::cout << "No graph detected.\n"; printHelp(); return; }
+            if (src==1 and dst==1) { std::cout << "Reminder: don't forget you can change src and dst nodes with -s and -d arguments.\n";}
+            if(!checkIfOk(g, src, dst)) return;
+            g.comparer(src, dst);
+            break;
+
+        case 4:
+            if (g.getHouseNumber() == 0) { std::cout << "No graph detected.\n"; printHelp(); return; }
+            g.tarjan();
+            break;
+
+        case 5:
+            if (g.getHouseNumber() == 0) { std::cout << "No graph detected.\n"; printHelp(); return; }
+            g.kruskal();
+            break;
+            
+        default:
+            std::cerr << "Unknown function number (-f) : " << numFonction << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+}
 
 Graphe::Graphe():  _oriente(false), _nbSommets(0)
 {}
@@ -322,10 +414,6 @@ void Graphe::findWay(int src, int dst)
                 }
             }
         }
-//        std::cout << "\tVoisins ouverts : ";
-//        for (int i : opened)
-//            std::cout << i << " ";
-//        std::cout << "\n\n";
         LOG_OPEN_NEIGHBOUR(opened);
     }
     delete [] hCost;
@@ -533,7 +621,7 @@ void Graphe::kruskal() const
         {
             unite(x, y, pred);
             std::cout << "Ajout au Minimum Spanning Tree de :\n";
-            std::cout << "\t" << x << " -> " << y << " : " << w << std::endl;
+            std::cout << "\t" << x+1 << " -> " << y+1 << " : " << w << std::endl;
             wTotal += w;
             ++nbArcs;
         }

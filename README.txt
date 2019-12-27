@@ -2,6 +2,16 @@
 Coustance Nathan
 Coyle Matthew
 
+Nous avons créé un système de maisons à coordonnées afin de pouvoir calculer la distance à vol d'oiseau
+ainsi que de pouvoir créer un quartier plus représentatif.
+
+Un Graphe possède N maisons numérotées de 1 à N.
+	Une maison possède deux coordonnées (x et y) ainsi que l'identifiant d'une maison précédente (pour retracer le chemin).
+Un Graphe possède également une matrice d'adjacence dans laquelle sont repertoriés les poids des arcs.
+	Une valeur en [i][j] signifie une route entre la maison i+1 et la maison j+1.
+La classe Graphe possède également les fonctions demandées dans le sujet.
+
+
 Pour compiler le projet :
 	g++ -std=c++14 -Wall main.cpp Graphe.cpp -o projetGraphe.exe
 	./projetGraphe.exe -h pour accéder au manuel
@@ -49,7 +59,7 @@ comparaison.png
 		/!\ Les tests ont été effectués en DEBUGMODE 0
 		(sans l'affichage des maisons "ouvertes",puisque ce dernier faisait perdre beaucoup de temps à A*)
 
-A*
+A* 
 	-> Graphe::calcHCost()
 		Calcule la distance de la maison actuelle à la maison destination
 	-> Graphe::findWay()
